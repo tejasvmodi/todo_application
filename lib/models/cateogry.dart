@@ -3,8 +3,7 @@ class Category {
   late String name;
   late String description;
 
-  
-  Map<String, dynamic> categoryMap() {
+ categoryMap() {
     var map = <String, dynamic>{
       'id': id,
       'name': name,

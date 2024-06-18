@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo_application/models/cateogry.dart';
 import 'package:todo_application/services/category_service.dart';
@@ -11,20 +13,19 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<ScaffoldMessengerState> _scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
 
   var categoryname = TextEditingController();
   var categorydescription = TextEditingController();
 
-  var _category = Category();
-  var _categoryservice = CategoryService();
+  final _category = Category();
+  final _categoryservice = CategoryService();
 
   List<Category> _categorylist = <Category>[];
 
   var editcategoryname = TextEditingController();
   var editcategorydescription = TextEditingController();
 
+  // ignore: prefer_typing_uninitialized_variables
   var category;
 
   @override
@@ -40,7 +41,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     var categories = await _categoryservice.getCategories();
     categories.forEach((category1) {
       setState(() {
-        print(category1['name']);
+      
 
         var model = Category();
         model.name = category1['name'];
@@ -70,6 +71,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
                   var result = await _categoryservice.saveCategory(_category);
                   if (result! > 0) {
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                     getAllCategories();
                   }
@@ -122,6 +124,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
                   var result = await _categoryservice.updatecategory(_category);
                   if (result > 0) {
+                    // ignore: use_build_context_synchronously
                     Navigator.of(context).pop();
                     getAllCategories();
                     _showSnackBar('Success');
@@ -177,7 +180,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
             TextButton(
               onPressed: () async {
 
-                await _categoryservice.deletecategory(categoryId);
+             var result =   await _categoryservice.deletecategory(categoryId);
+              if (result > 0) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).pop();
+                    getAllCategories();
+                    _showSnackBar('Deleted successfully');
+                  }
               },
               style: const ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(Colors.red),
@@ -205,10 +214,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             category[0]['description'] ?? 'No description';
       });
 
+      // ignore: use_build_context_synchronously
       _editCategoryName(context);
     } else {
       // Handle the case where the category is null or empty
-      print('Category not found');
+      log('Category not found');
     }
   }
 
@@ -260,6 +270,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          // ignore: void_checks
           return _showFormInDialog(context);
         },
         child: const Icon(Icons.add),
